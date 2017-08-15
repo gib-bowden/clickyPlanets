@@ -27,13 +27,13 @@ var planets = [{
 var planetContainer = document.getElementById("planets-container")
 
 
-function domBuilder () {
+function domBuilder (planetz) {
 	var planetString = "";
-	for (var i=0; i < planets.length; i++) {
+	for (var i=0; i < planetz.length; i++) {
 		var newPlanet = "";
 		newPlanet += `<div class="planet-tile" id="planet-tile-${i}">`
-		newPlanet += `<div class="planet-name" id="${planets[i].name}">${planets[i].name}</div>`
-		newPlanet += `<img class="planet-image" src="${planets[i].url}">`;
+		newPlanet += `<div class="planet-name hidden" id="${planetz[i].name}">${planetz[i].name}</div>`
+		newPlanet += `<img class="planet-image" src="${planetz[i].url}">`;
 		newPlanet += `</div>`
 		planetString += newPlanet;
 	}
@@ -47,9 +47,45 @@ function writeToDom(str) {
 
 var getPlanetsButton = document.getElementById("show-planets-btn");
 
-getPlanetsButton.addEventListener("mouseenter", domBuilder);
+getPlanetsButton.addEventListener("mouseenter", () => {domBuilder(planets)});
 
 
-// domBuilder();
+function showMe (e) {
+	console.log("showMe event", e);
+	if (e.target.previousSibling.classList.contains("hidden")) {
+		e.target.previousSibling.classList.remove("hidden");
+	} else {
+		e.target.previousSibling.classList.add("hidden");
+	}
+}
 
 
+
+document.addEventListener("click", (e) => {
+	if (e.target.className === 'planet-image') {
+		console.log("woop!");
+		showMe(e);
+	}
+})
+
+
+var searchBox = document.getElementById("input-field")
+
+searchBox.addEventListener("keypress", (e) => {
+	console.log("key event:", e.key);
+	if (event.key === "Enter"){
+		var val = searchBox.value
+		//1. filter the planets 
+		var results = planets.filter((planet) => {
+			return planet.name.indexOf(val)>-1;
+		})
+		domBuilder(results);
+	} 
+})
+
+
+var clearButton = document.getElementById("clear-btn") 
+
+clearButton.addEventListener("click", () => {
+	searchBox.value = "";
+})
